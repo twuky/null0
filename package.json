@@ -7,7 +7,9 @@
     "start:wasm": "npx -y onchange --initial 'src/*' -- npm run build:debug",
     "start": "run-p start:*",
     "build:debug": "asc src/demo.ts --exportRuntime --target debug",
-    "build:release": "asc src/demo.ts --exportRuntime -Ospeed --noAssert --target release"
+    "build:release": "asc src/demo.ts --exportRuntime -Ospeed --noAssert --target release",
+    "deploy": "npx -y surge web null0.surge.sh",
+    "predeploy": "build:release"
   },
   "keywords": [],
   "author": "David Konsumer <konsumer@jetboystudio.com>",

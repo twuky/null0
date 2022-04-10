@@ -8,7 +8,7 @@ let y:u16 = 0
 
 // called initially to load things. they ar enot readable yet
 export function init(): void  {
-  n.setTitle('Pakémon')
+  n.setTitle('null0 demo')
   logo = n.loadImage('assets/logo.png')
   n.playMusic('assets/the_golden_ages.mod')
 }
