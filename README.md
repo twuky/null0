@@ -1,8 +1,8 @@
 # null0
 
-Short for "notnull". This is a very simple cross-platform (inluding web, and fast native) game library that uses wasm on all platforms (compile once and distribute.) It takes inspiration from love2d and wasm4, but it's way less complete. Initially, it will just be a demo project for building your own stuff, but I hope to make a CLI tool for getting started quick, and maybe a libretro core and a few modules you can optionally use (networking for example.)
+Short for "notnull". This is a very simple cross-platform (including web, and fast native) game library that uses wasm on all platforms (compile once and distribute.) It takes inspiration from love2d and wasm4, but it's way less complete. Initially, it will just be a demo project for building your own stuff, but I hope to make a CLI tool for getting started quick, and maybe a libretro core and a few modules you can optionally use (networking for example.)
 
-You can think of it as a "fantasy console", but it's not nearly as constrained or complete as other really awesome ones, like TIC80. If you want something more like a gameboy, try wasm4 or TIC80. If you want a complete game library, try raylib (with many native bindings) or love2d (fun, lua-based wrapper around SDL.)
+You can think of it as a "fantasy console", but it's not nearly as constrained or complete as other really awesome ones, like TIC80. If you want something more like a gameboy, try wasm4 or TIC80. If you want a complete game library, try raylib (with many native language indings) or love2d (fun, lua-based wrapper around SDL, that is easy to work with, if you don't need anything else.)
 
 You can see the current demo [here](https://null0.surge.sh/).
 
@@ -30,4 +30,6 @@ npm run build:release
 ## todo
 
 - basic web API prototype & tooling for live-reloading
-- same in native runtime (using raylib)
+- same in native runtime (using raylib) Not sure what to use for native, myabe nim?
+- more "supported languages" via headers
+- libretro core
