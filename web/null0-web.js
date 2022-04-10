@@ -149,16 +149,14 @@ export default async function setup (cnv, minigame) {
     if (Math.round(newtime) % 10 === 0) {
       fps = Math.round(1 / ((newtime - oldtime) / 1000))
     }
-    window.requestAnimationFrame(doUpdate)
-  }
 
-  function doDraw () {
     minigame.draw()
+
     // TODO: use a bitmap font by default
     ctx.font = '8px "Acme 9"'
     ctx.fillStyle = 'white'
     ctx.fillText(fps.toString(), 1, 11)
-    window.requestAnimationFrame(doDraw)
+    window.requestAnimationFrame(doUpdate)
   }
 
   if (minigame.update) {
