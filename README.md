@@ -2,7 +2,7 @@
 
 Short for "notnull". This is a very simple cross-platform (inluding web, and fast native) game library that uses wasm on all platforms (compile once and distribute.) It takes inspiration from love2d and wasm4, but it's way less complete. Initially, it will just be a demo project for building your own stuff, but I hope to make a CLI tool for getting started quick, and maybe a libretro core and a few modules you can optionally use (networking for example.)
 
-You can think of it as a "fantasy console", but it's not nearly as constrained or complete as other really awesome ones, like TIC80. If you want something more like a gameboy, try wasm4 or tic80.
+You can think of it as a "fantasy console", but it's not nearly as constrained or complete as other really awesome ones, like TIC80. If you want something more like a gameboy, try wasm4 or TIC80. If you want a complete game library, try raylib (with many native bindings) or love2d (fun, lua-based wrapper around SDL.)
 
 
 ## specs
