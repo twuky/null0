@@ -1,6 +1,6 @@
-import * as n from "./null0"
-
 // this is what a normal game would look like
+
+import * as n from "./null0"
 
 let logo: u16
 let x:u16 = 0

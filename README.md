@@ -27,9 +27,29 @@ npm start
 npm run build:release
 ```
 
+## how it works
+
+The idea is that you have a few "targets" (platforms that your game will run on) and "sources" (languages you write your game in.) Any "source" will work with any "target", so you can develop on a reloading web-target, while working on stuff, and then release your game as a wasm file (or embedded runtime, like love does) that can run on any target.
+
+### targets
+
+- web - still working on API, but this will be completed first
+- native - once the web is complete for basic games, I will start with raylib, in some language I like (probly node first, then maybe nim)
+
+### source
+
+- assemblyscript - this will be the first header completed, since I like it a lot
+- nim - no work on this yet, but it is planned
+- C/C++ - no work on this yet, but it is planned
+- rust - no work on this yet, but it is planned
+- nelua - no work on this yet, but it is planned
+- zig - no work on this yet, but it is planned
+
+
 ## todo
 
-- basic web API prototype & tooling for live-reloading
-- same in native runtime (using raylib) Not sure what to use for native, myabe nim?
-- more "supported languages" via headers
-- libretro core
+- basic web API prototype & tooling for live-reloading on web
+- same API in native runtime (using raylib) Not sure what to use for native, myabe nim?
+- opengl/webgl - this would greatly improve performance, I think
+- more supported "source" headers
+- libretro core "target"
