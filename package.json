@@ -9,7 +9,7 @@
     "build:debug": "asc src/demo.ts --exportRuntime --target debug",
     "build:release": "asc src/demo.ts --exportRuntime -Ospeed --noAssert --target release",
     "deploy": "npx -y surge web null0.surge.sh",
-    "predeploy": "build:release"
+    "predeploy": "npm run build:debug"
   },
   "keywords": [],
   "author": "David Konsumer <konsumer@jetboystudio.com>",
