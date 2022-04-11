@@ -34,7 +34,7 @@ The idea is that you have a few "targets" (platforms that your game will run on)
 ### targets
 
 - web - still working on API, but this will be completed first
-- native - once the web is complete for basic games, I will start with raylib, in some language I like (probly node first, then maybe nim)
+- native - once the web is complete for basic games, I will start with raylib, in some language I like (probly node first, then maybe nim or rust to optimize)
 - native non-wasm - it's also possible to compile the same code to proper native, without wasm, with the right headers. You wouldn't be able to share your rom as easily, but it would make faster native apps for specfic use-cases.
 
 ### source
