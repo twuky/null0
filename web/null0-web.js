@@ -1,6 +1,6 @@
 // this is the web implementation of the null0 API for web
 
-/* global Image, performance, AudioWorkletNode, OffscreenCanvas */
+/* global Image, performance, Canvas */
 
 // TODO: would wegbl be better? https://webglfundamentals.org/webgl/lessons/webgl-2d-drawimage.html
 
@@ -26,13 +26,14 @@ const loadImage = url => new Promise(resolve => {
 // u16 RGBA to rgba color string
 const toColor = (num) => {
   num >>>= 0
-  const a = (num & 0xFF) / 255
-  const b = (num & 0xFF00) >>> 8
-  const g = (num & 0xFF0000) >>> 16
   const r = ((num & 0xFF000000) >>> 24)
+  const g = (num & 0xFF0000) >>> 16
+  const b = (num & 0xFF00) >>> 8
+  const a = (num & 0xFF) / 255
   return 'rgba(' + [r, g, b, a].join(',') + ')'
 }
 
+const fonts = {}
 let ctx
 let canvas
 const assets = {}
@@ -50,7 +51,9 @@ globalThis.pakemon_setTitle = (title) => {
 // load an image
 globalThis.pakemon_loadImage = (location) => {
   a++
-  assets[a] = loadImage(location)
+  ;(async () => {
+    assets[a] = loadImage(location)
+  })()
   return a
 }
 
@@ -62,17 +65,31 @@ globalThis.pakemon_unloadImage = (imageID) => {
 // draw an image
 globalThis.pakemon_drawImage = (imageID, x, y) => {
   if (assets[imageID]) {
-    ctx.drawImage(assets[imageID], x, y)
+    if (assets[imageID] instanceof Promise) {
+      ;(async () => {
+        ctx.drawImage(await assets[imageID], x, y)
+      })()
+    } else {
+      ctx.drawImage(assets[imageID], x, y)
+    }
   }
 }
 
 // resize/scale image (or part of image) and return a new imageID
-// TODO: finish this
-globalThis.pakemon_modImage = (imageID, sx, sy, sw, sh, dx, dy, dw, dh) => {
-  if (!assets[imageID]) {
-    return
-  }
-  const offscreen = new OffscreenCanvas(sx + dw + dx, sy + dh + dy)
+globalThis.pakemon_modImage = (imageID, sx, sy, sw, sh, dw, dh) => {
+  a += 1
+  const mya = a
+
+  ;(async () => {
+    const offscreen = document.createElement('canvas')
+    offscreen.width = dw
+    offscreen.height = dh
+    const octx = offscreen.getContext('2d')
+    octx.drawImage(await assets[imageID], sx, sy, sw, sh, 0, 0, dw, dh)
+    assets[mya] = await loadImage(offscreen.toDataURL())
+  })()
+
+  return a
 }
 
 globalThis.pakemon_imageDimensions = (imageID) => {
@@ -111,6 +128,35 @@ globalThis.pakemon_stopMusic = () => {
   music.autostart = false
 }
 
+globalThis.pakemon_getFPS = () => fps
+
+globalThis.pakemon_drawText = (font, text, x, y) => {
+  const { color, size, name } = assets[font]
+  ctx.beginPath()
+  ctx.font = `${size}px ${name}`
+  ctx.fillStyle = color
+  ctx.fillText(text, x, y)
+  ctx.fill()
+}
+
+globalThis.pakemon_loadFont = (filename, size, color) => {
+  a += 1
+  const name = `font${a}`
+  assets[a] = {
+    color: toColor(color),
+    size,
+    name
+  }
+  fonts[filename] = name
+  const s = document.createElement('style')
+  s.textContent = `@font-face {
+      font-family: font${a};
+      src: url("${filename}");
+    }`
+  document.getElementsByTagName('head')[0].appendChild(s)
+  return a
+}
+
 export default async function setup (cnv, minigame) {
   canvas = cnv
   ctx = cnv.getContext('2d')
@@ -143,27 +189,19 @@ export default async function setup (cnv, minigame) {
   }
 
   function doUpdate () {
-    minigame.update()
+    if (minigame.update) {
+      minigame.update()
+    }
     oldtime = newtime
     newtime = performance.now()
     if (Math.round(newtime) % 10 === 0) {
       fps = Math.round(1 / ((newtime - oldtime) / 1000))
     }
 
-    minigame.draw()
-
-    // TODO: use a bitmap font by default
-    ctx.font = '8px "Acme 9"'
-    ctx.fillStyle = 'white'
-    ctx.fillText(fps.toString(), 1, 11)
+    if (minigame.draw) {
+      minigame.draw()
+    }
     window.requestAnimationFrame(doUpdate)
   }
-
-  if (minigame.update) {
-    doUpdate()
-  }
-
-  if (minigame.draw) {
-    doDraw()
-  }
+  doUpdate()
 }

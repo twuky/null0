@@ -4,8 +4,8 @@
 <link rel="icon" type="image/png" href="assets/logo.png" />
 <style>
 @font-face {
-  font-family: "Acme 9";
-  src: url("assets/Acme 9 Regular.ttf");
+  font-family: likeraylib;
+  src: url("assets/likeraylib.ttf");
 }
 
 html, body {
@@ -17,7 +17,7 @@ html, body {
 body {
   background: #1a1c2c;
   color: #f4f4f4;
-  font-family: "Acme 9";
+  font-family: likeraylib;
 }
 
 #canvas {
@@ -54,4 +54,6 @@ import null0 from './null0-web.js'
 import * as minigame from './build/debug.js'
 
 null0(document.getElementById('canvas'), minigame)
+
+window.onclick = () => document.getElementById('title')?.remove()
 </script>

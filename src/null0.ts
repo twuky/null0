@@ -66,3 +66,19 @@ export declare function playMusic(filename: string): u16
 @external("env", "pakemon_stopMusic")
 export declare function stopMusic(): void
 
+// resize/scale image (or part of image) and return a new imageID
+@external("env", "pakemon_modImage")
+export declare function modImage(image: u16, sx: u16, sy: u16, sw: u16, sh: u16, dw: u16, dh: u16): u16
+
+// stop the mod music
+@external("env", "pakemon_getFPS")
+export declare function getFPS(): u16
+
+// draw text on the screen
+@external("env", "pakemon_drawText")
+export declare function drawText(font:u16, text:string, x:u16, y: u16): u16
+
+
+// draw text on the screen
+@external("env", "pakemon_loadFont")
+export declare function loadFont(filename:string, size: u16, color: u32): u16
