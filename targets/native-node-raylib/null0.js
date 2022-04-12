@@ -93,15 +93,16 @@ env.pakemon_stopMusic = () => r.StopMusicStream(music)
 
 env.pakemon_getFPS = () => r.GetFPS()
 
-env.pakemon_drawText = (font, text, x, y) => {
-  const { size, color } = assets[font]
+env.pakemon_drawText = (fontID, text, x, y) => {
+  const { size, color, font } = assets[fontID]
+  r.DrawTextEx(font,getString(text),{ x, y }, size, 0, color)
   r.DrawText(getString(text), x, y, size, color)
 }
 
 env.pakemon_loadFont = (filename, size, color) => {
-  // TODO: this ignores font
   a += 1
-  assets[a] = { size, color: toColor(color) }
+  const font = r.LoadFont(getString(filename))
+  assets[a] = { size, color: toColor(color), font }
   return a
 }
 
