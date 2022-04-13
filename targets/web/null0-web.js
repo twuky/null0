@@ -1,207 +1,152 @@
-// this is the web implementation of the null0 API for web
+// web-based target for null0
+// use setup(wasmExports, canvas) to start things
 
-/* global Image, performance, Canvas */
+// ideas from here: would wegbl be better? https://webglfundamentals.org/webgl/lessons/webgl-2d-drawimage.html
 
-// TODO: would wegbl be better? https://webglfundamentals.org/webgl/lessons/webgl-2d-drawimage.html
+/* eslint camelcase: 0 */
+/* global Image */
 
-export const B_A = 0
-export const B_B = 1
-export const B_X = 2
-export const B_Y = 2
-export const B_L = 2
-export const B_R = 2
-export const B_START = 2
-export const B_SELECT = 2
-export const B_LEFT = 2
-export const B_RIGHT = 2
-export const B_UP = 2
-export const B_DOWN = 2
-
-const loadImage = url => new Promise(resolve => {
-  const i = new Image()
-  i.onload = () => resolve(i)
-  i.src = url
-})
-
-// u16 RGBA to rgba color string
-const toColor = (num) => {
-  num >>>= 0
-  const r = ((num & 0xFF000000) >>> 24)
-  const g = (num & 0xFF0000) >>> 16
-  const b = (num & 0xFF00) >>> 8
-  const a = (num & 0xFF) / 255
-  return 'rgba(' + [r, g, b, a].join(',') + ')'
-}
-
-const fonts = {}
-let ctx
-let canvas
+let wasmMemory
+let gl
 const assets = {}
 let a = 0
-
-let oldtime = 0
-let newtime = 0
 let fps = 0
-
-// set the title of the window
-globalThis.pakemon_setTitle = (title) => {
-  document.title = title
-}
-
-// load an image
-globalThis.pakemon_loadImage = (location) => {
-  a++
-  ;(async () => {
-    assets[a] = loadImage(location)
-  })()
-  return a
-}
-
-// unload an image
-globalThis.pakemon_unloadImage = (imageID) => {
-  delete assets[imageID]
-}
-
-// draw an image
-globalThis.pakemon_drawImage = (imageID, x, y) => {
-  if (assets[imageID]) {
-    if (assets[imageID] instanceof Promise) {
-      ;(async () => {
-        ctx.drawImage(await assets[imageID], x, y)
-      })()
-    } else {
-      ctx.drawImage(assets[imageID], x, y)
-    }
-  }
-}
-
-// resize/scale image (or part of image) and return a new imageID
-globalThis.pakemon_modImage = (imageID, sx, sy, sw, sh, dw, dh) => {
-  a += 1
-  const mya = a
-
-  ;(async () => {
-    const offscreen = document.createElement('canvas')
-    offscreen.width = dw
-    offscreen.height = dh
-    const octx = offscreen.getContext('2d')
-    octx.drawImage(await assets[imageID], sx, sy, sw, sh, 0, 0, dw, dh)
-    assets[mya] = await loadImage(offscreen.toDataURL())
-  })()
-
-  return a
-}
-
-globalThis.pakemon_imageDimensions = (imageID) => {
-  if (assets[imageID]) {
-    return [assets[imageID].width, assets[imageID].height]
-  }
-  return [0, 0]
-}
-
-// clear screen with a color
-globalThis.pakemon_cls = (color) => {
-  const c = toColor(color)
-  ctx.beginPath()
-  ctx.rect(0, 0, canvas.width, canvas.height)
-  ctx.fillStyle = c
-  ctx.fill()
-}
-
 const music = new globalThis.Modplayer()
 let musicFilename
-let musicClick = false
 
-// load & play a mod music file
-globalThis.pakemon_playMusic = filename => {
-  if (musicClick) {
-    music.autostart = true
-    music.load(filename)
-  } else {
-    musicFilename = filename
+// get a wasm string from pointer
+function getString (pointer) {
+  if (!pointer) {
+    return null
   }
+  const end = pointer + new Uint32Array(wasmMemory.buffer)[pointer - 4 >>> 2] >>> 1
+  const memoryU16 = new Uint16Array(wasmMemory.buffer)
+  let start = pointer >>> 1
+  let string = ''
+  while (end - start > 1024) string += String.fromCharCode(...memoryU16.subarray(start, start += 1024))
+  return string + String.fromCharCode(...memoryU16.subarray(start, end))
 }
 
-// stop the mod music
-globalThis.pakemon_stopMusic = () => {
-  music.stop()
-  music.autostart = false
+// u16 RGBA to node-raylib color object
+function toColor (num) {
+  num >>>= 0
+  const r = ((num & 0xFF000000) >>> 24) / 255
+  const g = ((num & 0xFF0000) >>> 16) / 255
+  const b = ((num & 0xFF00) >>> 8) / 255
+  const a = (num & 0xFF) / 255
+  return { r, g, b, a }
 }
 
-globalThis.pakemon_getFPS = () => fps
+export async function setup (exports, canvas) {
+  wasmMemory = exports.memory
+  gl = canvas.getContext('webgl')
 
-globalThis.pakemon_drawText = (font, text, x, y) => {
-  const { color, size, name } = assets[font]
-  ctx.beginPath()
-  ctx.font = `${size}px ${name}`
-  ctx.fillStyle = color
-  ctx.fillText(text, x, y)
-  ctx.fill()
-}
-
-globalThis.pakemon_loadFont = (filename, size, color) => {
-  a += 1
-  const name = `font${a}`
-  assets[a] = {
-    color: toColor(color),
-    size,
-    name
-  }
-  fonts[filename] = name
-  const s = document.createElement('style')
-  s.textContent = `@font-face {
-      font-family: font${a};
-      src: url("${filename}");
-    }`
-  document.getElementsByTagName('head')[0].appendChild(s)
-  return a
-}
-
-export default async function setup (cnv, minigame) {
-  canvas = cnv
-  ctx = cnv.getContext('2d')
-  ctx.imageSmoothingEnabled = true
-  ctx.imageSmoothingQuality = 'high'
-
-  // call into wasm for game-loop
-
-  if (minigame.init) {
-    minigame.init()
+  if (exports.init) {
+    exports.init()
   }
 
-  // audio is click-to-start
-  cnv.onclick = async () => {
-    if (!musicClick) {
-      musicClick = true
-      music.autostart = true
-      if (musicFilename) {
-        music.load(musicFilename)
-      }
-    }
-  }
-
+  // load initial stuff
   for (const i of Object.keys(assets)) {
     assets[i] = await assets[i]
   }
 
-  if (minigame.loaded) {
-    minigame.loaded()
+  if (exports.loaded) {
+    exports.loaded()
   }
 
   function doUpdate () {
-    if (minigame.update) {
-      minigame.update()
-    }
-    oldtime = newtime
-    newtime = performance.now()
-    if (Math.round(newtime) % 10 === 0) {
-      fps = Math.round(1 / ((newtime - oldtime) / 1000))
+    if (exports.update) {
+      exports.update()
     }
 
-    if (minigame.draw) {
-      minigame.draw()
+    fps = 0
+
+    if (exports.draw) {
+      exports.draw()
     }
     window.requestAnimationFrame(doUpdate)
   }
   doUpdate()
+
+  // audio is click-to-start
+  canvas.addEventListener('click', () => {
+    music.autostart = true
+    if (musicFilename) {
+      music.load(musicFilename)
+    }
+  }, { once: true })
+
+  const handleResize = () => {
+    if (window.innerHeight > window.innerWidth) {
+      canvas.className = 'portrait'
+    } else {
+      canvas.className = 'landscape'
+    }
+  }
+
+  window.addEventListener('resize', handleResize)
+  handleResize()
+}
+
+// set the title of the window
+export function pakemon_setTitle (pointer) {
+  document.title = getString(pointer)
+}
+
+// load an image
+export function pakemon_loadImage (pointer) {
+  a += 1
+
+  return a
+}
+
+// unload an image
+export function pakemon_unloadImage (imageID) {
+  delete assets[imageID]
+}
+
+// draw an image
+export function pakemon_drawImage (imageID, x, y) {
+}
+
+// resize/scale image (or part of image) and return a new imageID
+export function pakemon_modImage (imageID, sx, sy, sw, sh, dw, dh) {
+  a += 1
+
+  return a
+}
+
+// get height/width for an image
+export function pakemon_imageDimensions (imageID) {
+}
+
+// clear screen with a color
+export function pakemon_cls (color) {
+  const { r, g, b, a } = toColor(color)
+  gl.clearColor(r, g, b, a)
+  gl.clear(gl.COLOR_BUFFER_BIT)
+}
+
+// load & play a mod music file
+export function pakemon_playMusic (filename) {
+  a += 1
+
+  return a
+}
+
+// stop the mod music
+export function pakemon_stopMusic () {
+}
+
+export function pakemon_getFPS () {
+  return fps
+}
+
+export function pakemon_drawText (font, text, x, y) {
+}
+
+export function pakemon_loadFont (filename, size, color) {
+  a += 1
+
+  return a
 }

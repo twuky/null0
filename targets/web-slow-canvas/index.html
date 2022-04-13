@@ -57,18 +57,19 @@ body {
 </html>
 <script src="./modplayer.js"></script>
 <script type="module">
-/* global WebAssembly, fetch */
-import * as null0 from './null0-web.js'
+import null0 from './null0-web.js'
+import * as minigame from './build/debug.js'
 
-WebAssembly.instantiateStreaming(fetch('build/debug.wasm'), {
-  env: {
-    ...null0,
-    abort: () => {},
-    'console.log': console.log
+null0(document.getElementById('canvas'), minigame)
+
+window.onclick = () => document.getElementById('title')?.remove()
+
+window.onresize = () => {
+  if (window.innerHeight > window.innerWidth) {
+    document.getElementById('canvas').className = 'portrait'
+  } else {
+    document.getElementById('canvas').className = 'landscape'
   }
-}).then(({ instance: { exports } }) => null0.setup(exports, document.getElementById('canvas')))
-
-window.addEventListener('click', () => {
-  document.getElementById('title')?.remove()
-}, { once: true })
+}
+window.onresize()
 </script>

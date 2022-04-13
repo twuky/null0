@@ -4,4 +4,4 @@ This is a demo of a custom runtime that will load your null0 js source, and run 
 
 All runtimes have trade-offs. This is a native library for quickjs, so you will need to install that runtime. You write your code in js, which you can compile to standalone code with `qjsc`
 
-If you like js, and intend to distribute a finished game, this might be useful. 
+If you like js, and intend to distribute a compiled game (not share your wasm rom with others) this might be useful. 

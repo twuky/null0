@@ -115,10 +115,10 @@ const wasmModule = await WebAssembly.instantiate(await readFile(wasmfile), { env
 r.SetTraceLogLevel(r.LOG_ERROR)
 r.SetConfigFlags(r.FLAG_VSYNC_HINT)
 r.InitWindow(320, 240, 'null0')
-
-// this is not needed really, with vsync
-// r.SetTargetFPS(60)
 r.InitAudioDevice()
+
+// this is not needed with vsync
+// r.SetTargetFPS(60)
 
 wasmModule.instance.exports.init()
 wasmModule.instance.exports.loaded()
