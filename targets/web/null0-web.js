@@ -45,11 +45,6 @@ export async function setup (exports, canvas) {
     exports.init()
   }
 
-  // load initial stuff
-  for (const i of Object.keys(assets)) {
-    assets[i] = await assets[i]
-  }
-
   if (exports.loaded) {
     exports.loaded()
   }

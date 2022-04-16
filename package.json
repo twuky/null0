@@ -6,8 +6,8 @@
     "start:web": "npx -y live-server --ignore=src targets/web",
     "start:wasm": "npx -y onchange --initial 'sources/*' -- npm run build:debug",
     "start": "run-p start:*",
-    "build:debug": "asc sources/actionscript/demo.ts --exportRuntime --target debug",
-    "build:release": "asc sources/actionscript/demo.ts --exportRuntime -Ospeed --noAssert --target release",
+    "build:debug": "asc sources/assemblyscript/demo.ts --exportRuntime --target debug",
+    "build:release": "asc sources/assemblyscript/demo.ts --exportRuntime -Ospeed --noAssert --target release",
     "deploy": "npx -y surge targets/web null0.surge.sh",
     "predeploy": "npm run build:debug"
   },
