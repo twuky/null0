@@ -1,4 +1,5 @@
-// this is the web implementation of the null0 API for web
+// this is the web implementation of the null0 API
+// use setup(wasmBytes, canvas) to get things started!
 
 /* global WebAssembly, Image, FontFace */
 /* eslint-disable camelcase */
@@ -31,6 +32,16 @@ const _loadImage = url => new Promise(resolve => {
 const _loadFont = async (url, name) => {
   const face = await new FontFace(name, `url(${url})`)
   document.fonts.add(face)
+}
+
+// u16 RGBA to rgba color string
+const _toColor = (num) => {
+  num >>>= 0
+  const r = ((num & 0xFF000000) >>> 24)
+  const g = (num & 0xFF0000) >>> 16
+  const b = (num & 0xFF00) >>> 8
+  const a = (num & 0xFF) / 255
+  return 'rgba(' + [r, g, b, a].join(',') + ')'
 }
 
 export const keyMap = {
@@ -69,7 +80,8 @@ export const palette = [
 
 // clear screen with a color - void
 export function cls (color) {
-  // console.log('cls', { color })
+  ctx.fillStyle = _toColor(color)
+  ctx.fillRect(0, 0, 320, 240)
 }
 
 // set the title of the window - void
@@ -80,7 +92,6 @@ export function setTitle (title) {
 // load an image - u16
 export function loadImage (filename) {
   const a = assets.length
-  console.log('loadImage', { a, filename })
   assets.push(undefined)
   _loadImage(filename).then(i => {
     assets[a] = i
@@ -100,6 +111,7 @@ export function drawImage (image, x, y) {
   if (y < 0) {
     y = 240 + x
   }
+  ctx.drawImage(assets[image], x, y)
 
   // console.log('drawImage', { image, x, y })
 }
@@ -122,8 +134,6 @@ export function loadMusic (filename) {
     filename,
     player: new Modplayer({ mod: PlayerProtracker, s3m: PlayerScreamtracker, xm: PlayerFasttracker })
   }
-
-  console.log('loadMusic', { a, filename })
   return a
 }
 
@@ -147,15 +157,15 @@ export function stopMusic (music) {
   }
 }
 
-// load a spritesheet - u16
-export function loadSprites (image, height, width) {
-  if (!image) {
+// draw a single frame from a spritesheet
+export function drawSprite (image, frame, width, height, x, y) {
+  if (!assets[image]) {
     return
   }
-  const a = assets.length
-  assets.push(undefined)
-  console.log('loadSprites', { a, image, height, width })
-  return a
+  const columns = (assets[image].width / width) | 0
+  const frameX = (((frame % columns) | 0) * width)
+  const frameY = (((frame / columns) | 0) * height)
+  ctx.drawImage(assets[image], frameX, frameY, width, height, x, y, width, height)
 }
 
 // stop the mod music - u16
@@ -168,6 +178,8 @@ export function drawText (font, text, x, y) {
   if (!font || !assets[font]) {
     return
   }
+
+  // this allows negative positioning
   if (x < 0) {
     x = 320 + x
   }
@@ -177,18 +189,15 @@ export function drawText (font, text, x, y) {
 
   const { size, color, name } = assets[font]
 
-  ctx.fillStyle = 'red'
+  ctx.fillStyle = _toColor(color)
   ctx.font = `${size}px ${name}`
-  ctx.fillText('Hello world', x, y)
-
-  // console.log('drawText', { font, text, x, y })
+  ctx.fillText(text, x, y)
 }
 
 // draw text on the screen - u16
 export function loadFont (filename, size, color) {
   const a = assets.length
   const name = `font${a}`
-  console.log('loadFont', { a, name, filename, size, color })
   assets.push(undefined)
   _loadFont(filename, name).then(() => {
     assets[a] = { size, color, name }
@@ -199,7 +208,6 @@ export function loadFont (filename, size, color) {
 
 export default async function setup (wasmBytes, canvas) {
   ctx = canvas.getContext('2d')
-
   const { exports } = await WebAssembly.instantiate(await WebAssembly.compile(wasmBytes), {
     env: {
       null0_setTitle (title) {
@@ -238,14 +246,22 @@ export default async function setup (wasmBytes, canvas) {
       null0_drawImage (image, x, y) {
         drawImage(image >>> 0, x, y)
       },
-      null0_loadSprites (image, height, width) {
-        return loadSprites(image >>> 0, height >>> 0, width >>> 0)
+      null0_drawSprite (image, frame, width, height, x, y) {
+        return drawSprite(image >>> 0, frame >>> 0, width >>> 0, height >>> 0, x >>> 0, y >>> 0)
       },
       null0_null0_stopMusic (music) {
         stopMusic(music >>> 0)
       },
       null0_imageDimensions (image) {
-        return imageDimensions(image >>> 0)
+        // sources/assemblyscript/null0/imageDimensions(u16) => ~lib/array/Array<u16>
+        return __lowerArray((pointer, value) => { new Uint16Array(memory.buffer)[pointer >>> 1] = value }, 4, 1, imageDimensions(image)) || __notnull()
+      },
+      seed () {
+        // ~lib/builtins/seed() => f64
+        return (() => {
+          // @external.js
+          return Date.now() * Math.random()
+        })()
       },
       null0_getFPS: getFPS
     }
@@ -260,6 +276,27 @@ export default async function setup (wasmBytes, canvas) {
     let string = ''
     while (end - start > 1024) string += String.fromCharCode(...memoryU16.subarray(start, start += 1024))
     return string + String.fromCharCode(...memoryU16.subarray(start, end))
+  }
+
+  function __lowerArray (lowerElement, id, align, values) {
+    if (values == null) return 0
+    const length = values.length
+    const buffer = exports.__pin(exports.__new(length << align, 0)) >>> 0
+    const header = exports.__pin(exports.__new(16, id)) >>> 0
+    const memoryU32 = new Uint32Array(memory.buffer)
+    memoryU32[header + 0 >>> 2] = buffer
+    memoryU32[header + 4 >>> 2] = buffer
+    memoryU32[header + 8 >>> 2] = length << align
+    memoryU32[header + 12 >>> 2] = length
+    for (let i = 0; i < length; ++i) lowerElement(buffer + (i << align >>> 0), values[i])
+    exports.__unpin(buffer)
+    exports.__unpin(header)
+    return header
+  }
+
+  // ha!
+  function __notnull () {
+    throw TypeError('value must not be null')
   }
 
   resourceLoaded = exports.loaded || (() => {})
@@ -298,7 +335,7 @@ export default async function setup (wasmBytes, canvas) {
 
   const doUpdate = () => {
     oldtime = newtime
-    newtime = window.performance.now()
+    newtime = Date.now()
     delta = newtime - oldtime
 
     if (exports.update) {

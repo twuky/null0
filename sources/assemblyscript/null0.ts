@@ -66,9 +66,9 @@ export declare function playMusic(music: u16): void
 @external("env", "null0_stopMusic")
 export declare function stopMusic(music: u16): void
 
-// load a spritesheet
-@external("env", "null0_loadSprites")
-export declare function loadSprites(image: u16, height:u16, width:u16): u16
+// draw a single frame from a spritesheet
+@external("env", "null0_drawSprite")
+export declare function drawSprite(image: u16, frame: u16, width:u16, height:u16, x:u16, y:u16): void
 
 // stop the mod music
 @external("env", "null0_getFPS")
@@ -81,3 +81,4 @@ export declare function drawText(font:u16, text:string, x:i16, y: i16): void
 // draw text on the screen
 @external("env", "null0_loadFont")
 export declare function loadFont(filename:string, size: u16, color: u32): u16
+
