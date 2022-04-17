@@ -31,15 +31,6 @@ body {
   image-rendering: crisp-edges;
 }
 
-#canvas.portrait {
-  height: 100vh;
-  width: auto;
-}
-#canvas.landscape {
-  width: 100vw;
-  height: auto;
-}
-
 #title {
   text-align: center;
   width: 100vw;
@@ -62,14 +53,15 @@ import * as minigame from './build/debug.js'
 
 null0(document.getElementById('canvas'), minigame)
 
-window.onclick = () => document.getElementById('title')?.remove()
-
-window.onresize = () => {
-  if (window.innerHeight > window.innerWidth) {
-    document.getElementById('canvas').className = 'portrait'
-  } else {
-    document.getElementById('canvas').className = 'landscape'
-  }
+const onClick = () => {
+  document.getElementById('title')?.remove()
+  window.removeEvenListener('click', onClick)
 }
-window.onresize()
+
+const onResize = () => {
+}
+
+window.addEvenListener('click', onClick)
+window.addEvenListener('click', onResize)
+onResize()
 </script>

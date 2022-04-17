@@ -43,10 +43,10 @@ const textures = {}
 let music
 
 // set the title of the window
-env.pakemon_setTitle = (pointer) => r.SetWindowTitle(getString(pointer))
+env.null0_setTitle = (pointer) => r.SetWindowTitle(getString(pointer))
 
 // load an image
-env.pakemon_loadImage = (pointer) => {
+env.null0_loadImage = (pointer) => {
   a += 1
   assets[a] = r.LoadImage(getString(pointer))
   textures[a] = r.LoadTextureFromImage(assets[a])
@@ -54,16 +54,16 @@ env.pakemon_loadImage = (pointer) => {
 }
 
 // unload an image
-env.pakemon_unloadImage = (imageID) => {
+env.null0_unloadImage = (imageID) => {
   r.UnloadImage(assets[imageID])
   r.UnloadTexture(textures[imageID])
 }
 
 // draw an image
-env.pakemon_drawImage = (imageID, x, y) => r.DrawTexture(textures[imageID], x, y, r.WHITE)
+env.null0_drawImage = (imageID, x, y) => r.DrawTexture(textures[imageID], x, y, r.WHITE)
 
 // resize/scale image (or part of image) and return a new imageID
-env.pakemon_modImage = (imageID, sx, sy, sw, sh, dw, dh) => {
+env.null0_modImage = (imageID, sx, sy, sw, sh, dw, dh) => {
   a += 1
   assets[a] = r.ImageFromImage(assets[imageID], {x:sx, y:sy, width:sw, height: sh})
   r.ImageResize(assets[a], dw, dh)
@@ -71,35 +71,35 @@ env.pakemon_modImage = (imageID, sx, sy, sw, sh, dw, dh) => {
   return a
 }
 
-env.pakemon_imageDimensions = (imageID) => {
+env.null0_imageDimensions = (imageID) => {
   const { width, height } = assets[imageID]
   return [width, height]
 }
 
 // clear screen with a color
-env.pakemon_cls = (color) => {
+env.null0_cls = (color) => {
   r.ClearBackground(toColor(color))
 }
 
 // load & play a mod music file
-env.pakemon_playMusic = filename => {
+env.null0_playMusic = filename => {
   music = r.LoadMusicStream(getString(filename))
   r.PlayMusicStream(music)
   music.looping = true
 }
 
 // stop the mod music
-env.pakemon_stopMusic = () => r.StopMusicStream(music)
+env.null0_stopMusic = () => r.StopMusicStream(music)
 
-env.pakemon_getFPS = () => r.GetFPS()
+env.null0_getFPS = () => r.GetFPS()
 
-env.pakemon_drawText = (fontID, text, x, y) => {
+env.null0_drawText = (fontID, text, x, y) => {
   const { size, color, font } = assets[fontID]
   r.DrawTextEx(font,getString(text),{ x, y }, size, 0, color)
   r.DrawText(getString(text), x, y, size, color)
 }
 
-env.pakemon_loadFont = (filename, size, color) => {
+env.null0_loadFont = (filename, size, color) => {
   a += 1
   const font = r.LoadFont(getString(filename))
   assets[a] = { size, color: toColor(color), font }

@@ -14,7 +14,7 @@ export const B_UP = 11
 export const B_DOWN = 12
 
 // https://lospec.com/palette-list/sweetie-16
-// just nice colors to use when you need one
+// totally optional: just nice colors to use when you need one
 export const palette = [
   0x1a1c2cff,
   0x5d275dff,
@@ -35,50 +35,49 @@ export const palette = [
 ]
 
 // clear screen with a color
-@external("env", "pakemon_cls")
+@external("env", "null0_cls")
 export declare function cls(color: u32): void
 
 // set the title of the window
-@external("env", "pakemon_setTitle")
+@external("env", "null0_setTitle")
 export declare function setTitle(title: string): void
 
 // load an image
-@external("env", "pakemon_loadImage")
+@external("env", "null0_loadImage")
 export declare function loadImage(filename: string): u16
 
-// unload an image
-@external("env", "pakemon_unloadImage")
-export declare function unloadImage(image: u16): void
-
 // draw an image
-@external("env", "pakemon_drawImage")
-export declare function drawImage(image: u16, x: u16, y:u16): void
+@external("env", "null0_drawImage")
+export declare function drawImage(image: u16, x: i16, y:i16): void
 
 // get height/width for an image
-@external("env", "pakemon_imageDimensions")
+@external("env", "null0_imageDimensions")
 export declare function imageDimensions(image: u16): Array<u16>(2)
 
 // load a mod music file
-@external("env", "pakemon_playMusic")
-export declare function playMusic(filename: string): u16
+@external("env", "null0_loadMusic")
+export declare function loadMusic(filename: string): u16
+
+// load a mod music file
+@external("env", "null0_playMusic")
+export declare function playMusic(music: u16): void
 
 // stop the mod music
-@external("env", "pakemon_stopMusic")
-export declare function stopMusic(): void
+@external("env", "null0_stopMusic")
+export declare function stopMusic(music: u16): void
 
-// resize/scale image (or part of image) and return a new imageID
-@external("env", "pakemon_modImage")
-export declare function modImage(image: u16, sx: u16, sy: u16, sw: u16, sh: u16, dw: u16, dh: u16): u16
+// load a spritesheet
+@external("env", "null0_loadSprites")
+export declare function loadSprites(image: u16, height:u16, width:u16): u16
 
 // stop the mod music
-@external("env", "pakemon_getFPS")
+@external("env", "null0_getFPS")
 export declare function getFPS(): u16
 
 // draw text on the screen
-@external("env", "pakemon_drawText")
-export declare function drawText(font:u16, text:string, x:u16, y: u16): u16
-
+@external("env", "null0_drawText")
+export declare function drawText(font:u16, text:string, x:i16, y: i16): void
 
 // draw text on the screen
-@external("env", "pakemon_loadFont")
+@external("env", "null0_loadFont")
 export declare function loadFont(filename:string, size: u16, color: u32): u16

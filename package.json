@@ -3,19 +3,19 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start:web": "npx -y live-server --ignore=src targets/web",
-    "start:wasm": "npx -y onchange --initial 'sources/*' -- npm run build:debug",
-    "start": "run-p start:*",
-    "build:debug": "asc sources/assemblyscript/demo.ts --exportRuntime --target debug",
-    "build:release": "asc sources/assemblyscript/demo.ts --exportRuntime -Ospeed --noAssert --target release",
-    "deploy": "npx -y surge targets/web null0.surge.sh",
-    "predeploy": "npm run build:debug"
+    "build:example:assemblyscript": "asc examples/assemblyscript/demo.ts --target debug --bindings raw",
+    "watch:example:assemblyscript": "npx -y onchange -v -i examples/assemblyscript sources/assemblyscript -- npm run build:example:assemblyscript",
+    "watch:target:web": "npx -y live-server targets/web",
+    "build:target:web": "asc examples/assemblyscript/demo.ts --target release --bindings raw",
+    "start": "run-p watch:example:assemblyscript watch:target:web"
   },
   "keywords": [],
   "author": "David Konsumer <konsumer@jetboystudio.com>",
   "license": "MIT",
   "devDependencies": {
-    "assemblyscript": "^0.20.4",
     "npm-run-all": "^4.1.5"
+  },
+  "dependencies": {
+    "assemblyscript": "^0.20.4"
   }
 }

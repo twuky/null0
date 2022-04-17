@@ -44,12 +44,12 @@ let newtime = 0
 let fps = 0
 
 // set the title of the window
-globalThis.pakemon_setTitle = (title) => {
+globalThis.null0_setTitle = (title) => {
   document.title = title
 }
 
 // load an image
-globalThis.pakemon_loadImage = (location) => {
+globalThis.null0_loadImage = (location) => {
   a++
   ;(async () => {
     assets[a] = loadImage(location)
@@ -58,12 +58,12 @@ globalThis.pakemon_loadImage = (location) => {
 }
 
 // unload an image
-globalThis.pakemon_unloadImage = (imageID) => {
+globalThis.null0_unloadImage = (imageID) => {
   delete assets[imageID]
 }
 
 // draw an image
-globalThis.pakemon_drawImage = (imageID, x, y) => {
+globalThis.null0_drawImage = (imageID, x, y) => {
   if (assets[imageID]) {
     if (assets[imageID] instanceof Promise) {
       ;(async () => {
@@ -76,7 +76,7 @@ globalThis.pakemon_drawImage = (imageID, x, y) => {
 }
 
 // resize/scale image (or part of image) and return a new imageID
-globalThis.pakemon_modImage = (imageID, sx, sy, sw, sh, dw, dh) => {
+globalThis.null0_modImage = (imageID, sx, sy, sw, sh, dw, dh) => {
   a += 1
   const mya = a
 
@@ -92,7 +92,7 @@ globalThis.pakemon_modImage = (imageID, sx, sy, sw, sh, dw, dh) => {
   return a
 }
 
-globalThis.pakemon_imageDimensions = (imageID) => {
+globalThis.null0_imageDimensions = (imageID) => {
   if (assets[imageID]) {
     return [assets[imageID].width, assets[imageID].height]
   }
@@ -100,7 +100,7 @@ globalThis.pakemon_imageDimensions = (imageID) => {
 }
 
 // clear screen with a color
-globalThis.pakemon_cls = (color) => {
+globalThis.null0_cls = (color) => {
   const c = toColor(color)
   ctx.beginPath()
   ctx.rect(0, 0, canvas.width, canvas.height)
@@ -113,7 +113,7 @@ let musicFilename
 let musicClick = false
 
 // load & play a mod music file
-globalThis.pakemon_playMusic = filename => {
+globalThis.null0_playMusic = filename => {
   if (musicClick) {
     music.autostart = true
     music.load(filename)
@@ -123,14 +123,14 @@ globalThis.pakemon_playMusic = filename => {
 }
 
 // stop the mod music
-globalThis.pakemon_stopMusic = () => {
+globalThis.null0_stopMusic = () => {
   music.stop()
   music.autostart = false
 }
 
-globalThis.pakemon_getFPS = () => fps
+globalThis.null0_getFPS = () => fps
 
-globalThis.pakemon_drawText = (font, text, x, y) => {
+globalThis.null0_drawText = (font, text, x, y) => {
   const { color, size, name } = assets[font]
   ctx.beginPath()
   ctx.font = `${size}px ${name}`
@@ -139,7 +139,7 @@ globalThis.pakemon_drawText = (font, text, x, y) => {
   ctx.fill()
 }
 
-globalThis.pakemon_loadFont = (filename, size, color) => {
+globalThis.null0_loadFont = (filename, size, color) => {
   a += 1
   const name = `font${a}`
   assets[a] = {
