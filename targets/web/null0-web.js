@@ -112,8 +112,6 @@ export function drawImage (image, x, y) {
     y = 240 + x
   }
   ctx.drawImage(assets[image], x, y)
-
-  // console.log('drawImage', { image, x, y })
 }
 
 // get height/width for an image - Array<u16>(2)

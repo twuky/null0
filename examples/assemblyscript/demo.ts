@@ -28,7 +28,12 @@ let music: u16
 
 let fps = ''
 let counter = 0
-let direction = 0.0
+
+let x:i16 = 0
+let y:i16 = 0
+
+let xSpeed:i16 = 1
+let ySpeed:i16 = 1
 
 // called initially to load things. they ar enot readable yet
 export function init(): void  {
@@ -76,39 +81,37 @@ export function update(delta:u16): void  {
   // would be cool to use delta, but this seems to work better for animations
   counter += 1
 
-  if (counter % 5 === 0) {
+  if (counter % 10 === 0) {
     fps = getFPS().toString()
   }
 
-  if (counter % 10 === 0) {
+  if (counter % 20 === 0) {
     catFrame += 1
   }
 
   cls(palette[0])
 
-  const x = <u16>counter % 320
-  const y = <u16>counter % 240
+  x = x + xSpeed
+  y = y + ySpeed
 
-  if (x === 0) {
-    direction = Math.floor(Math.random() * 2)
-  }
-
-  if (y === 0) {
-    direction = Math.floor(Math.random() * 2) + 2
+  if (x > 260) {
+    xSpeed = -1
   }
 
-  if (direction === 0) {
-    drawImage(logo, x, y)
+  if (x < 0) {
+    xSpeed = 1
   }
-  if (direction === 1) {
-    drawImage(logo, x, 240-y)
+
+  if (y > 200) {
+    ySpeed = -1
   }
-  if (direction === 2) {
-    drawImage(logo, 320-x, y)
+
+  if (y < 0) {
+    ySpeed = 1
   }
-  if (direction === 3) {
-    drawImage(logo, 320-x, 240-y)
-  }
+
+  
+  drawImage(logo, x, y)
   
   drawSprite(catImage, <u16>catFrames[catFrame % catFrames.length] , 32, 32, 100, 200)
   drawSprite(catImage, <u16>catFrames[(catFrame + 2) % catFrames.length] , 32, 32, 200, 200)
