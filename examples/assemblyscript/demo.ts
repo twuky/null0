@@ -94,7 +94,7 @@ export function update(delta:u16): void  {
   x = x + xSpeed
   y = y + ySpeed
 
-  if (x > 260) {
+  if (x > 280) {
     xSpeed = -1
   }
 

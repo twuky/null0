@@ -333,7 +333,7 @@ export default async function setup (wasmBytes, canvas) {
 
   const doUpdate = () => {
     oldtime = newtime
-    newtime = Date.now()
+    newtime = performance.now()
     delta = newtime - oldtime
 
     if (exports.update) {
