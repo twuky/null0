@@ -5,6 +5,8 @@ import { readFile } from 'fs/promises'
 import r from 'raylib'
 import { MaintainFPS } from './async.js'
 
+let fps = 0
+
 // asset system
 // I start with 1 item, so 0 is "not loaded" not a position in the assets array
 const assets = [undefined]
@@ -57,7 +59,7 @@ export const palette = [
 
 // get FPS
 export function getFPS () {
-  return r.GetFPS()
+  return Math.floor(fps)
 }
 
 // clear screen with a color - void
@@ -85,6 +87,13 @@ export function loadImage (filename) {
 
 // draw an image - void
 export function drawImage (imageID, x, y) {
+  // this allows negative positioning
+  if (x < 0) {
+    x = 320 + x
+  }
+  if (y < 0) {
+    y = 240 + x
+  }
   r.DrawTexture(assets[imageID].texture, x, y, r.WHITE)
 }
 
@@ -119,11 +128,38 @@ export function stopMusic (musicID) {
 
 // draw a single frame from a spritesheet
 export function drawSprite (imageID, frame, width, height, x, y) {
-  // TODO
+  // this allows negative positioning
+  if (x < 0) {
+    x = 320 + x
+  }
+  if (y < 0) {
+    y = 240 + x
+  }
+
+  assets[imageID].frames = assets[imageID].frames || {}
+  const key = `${width}x${height}`
+  assets[imageID].frames[key] = assets[imageID].frames[key] || {}
+
+  if (!assets[imageID].frames[key][frame]) {
+    const columns = (assets[imageID].image.width / width) | 0
+    const frameX = (((frame % columns) | 0) * width)
+    const frameY = (((frame / columns) | 0) * height)
+
+    const subimage = r.ImageFromImage(assets[imageID].image, { x: frameX, y: frameY, width, height })
+    assets[imageID].frames[key][frame] = r.LoadTextureFromImage(subimage)
+  }
+  r.DrawTexture(assets[imageID].frames[key][frame], x, y, r.WHITE)
 }
 
 // draw text on the screen - void
 export function drawText (fontID, text, x, y) {
+  // this allows negative positioning
+  if (x < 0) {
+    x = 320 + x
+  }
+  if (y < 0) {
+    y = 240 + x
+  }
   const { size, color, font } = assets[fontID]
   r.DrawTextEx(font, text, { x, y }, size, 0, color)
 }
@@ -235,7 +271,7 @@ export default async function setup (wasmBytes) {
   resourceLoaded = exports.loaded || (() => {})
 
   r.SetTraceLogLevel(r.LOG_ERROR)
-  // r.SetConfigFlags(r.FLAG_VSYNC_HINT)
+  r.SetConfigFlags(r.FLAG_VSYNC_HINT)
   r.InitWindow(320, 240, 'null0')
   r.InitAudioDevice()
 
@@ -243,7 +279,7 @@ export default async function setup (wasmBytes) {
     exports.init()
   }
 
-  while (await MaintainFPS(60)) {
+  while (fps = await MaintainFPS(60)) {
     for (const m of music) {
       r.UpdateMusicStream(assets[m])
     }

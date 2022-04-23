@@ -105,6 +105,7 @@ export function drawImage (image, x, y) {
   if (!image || !assets[image]) {
     return
   }
+  // this allows negative positioning
   if (x < 0) {
     x = 320 + x
   }
@@ -159,6 +160,13 @@ export function stopMusic (music) {
 export function drawSprite (image, frame, width, height, x, y) {
   if (!assets[image]) {
     return
+  }
+  // this allows negative positioning
+  if (x < 0) {
+    x = 320 + x
+  }
+  if (y < 0) {
+    y = 240 + x
   }
   const columns = (assets[image].width / width) | 0
   const frameX = (((frame % columns) | 0) * width)
