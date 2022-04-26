@@ -1,3 +1,4 @@
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -11,107 +12,119 @@
 
 #define FATAL(func, msg) { fprintf(stderr, "Fatal: %s - %s\n", func, msg); return 1; }
 
-m3ApiRawFunction(m3_cls) {
-    m3ApiGetArg (uint32_t, color)
-    printf("color: %d\n", color);
-    m3ApiSuccess();
+m3ApiRawFunction(null0_cls) {
+  m3ApiGetArg(uint32_t, color)
+  m3ApiSuccess();
 }
 
-m3ApiRawFunction(m3_setTitle) {
-    m3ApiGetArgMem (char *, title)
-    printf("title: %s\n", title);
-    m3ApiSuccess();
+m3ApiRawFunction(null0_setTitle) {
+  m3ApiGetArgMem(char*, title)
+  m3ApiSuccess();
 }
 
-m3ApiRawFunction(m3_loadImage) {
-    m3ApiReturnType (uint16_t);
-    m3ApiGetArgMem (char *, filename)
-    printf("image: %s\n", filename);
-    m3ApiReturn(0);
+m3ApiRawFunction(null0_loadImage) {
+  m3ApiReturnType (uint16_t);
+  m3ApiGetArgMem(char*, filename)
+  m3ApiReturn(0);
 }
 
-m3ApiRawFunction(m3_loadFont) {
-    m3ApiReturnType (uint16_t);
-    m3ApiGetArgMem (char *, filename)
-    printf("font: %s\n", filename);
-    m3ApiReturn(0);
+m3ApiRawFunction(null0_drawImage) {
+  m3ApiGetArg(uint16_t, image)
+  m3ApiGetArg(int16_t, x)
+  m3ApiGetArg(int16_t, y)
+  m3ApiSuccess();
 }
 
-m3ApiRawFunction(m3_loadMusic) {
-    m3ApiReturnType (uint16_t);
-    m3ApiGetArgMem (char *, filename)
-    printf("music: %s\n", filename);
-    m3ApiReturn(0);
+m3ApiRawFunction(null0_imageDimensions) {
+  // m3ApiReturnType (undefined);
+  m3ApiGetArg(uint16_t, image)
+  // m3ApiReturn(0);
 }
 
-m3ApiRawFunction(m3_drawImage) {
-    m3ApiGetArg (uint32_t, imageID)
-    m3ApiGetArg (uint32_t, x)
-    m3ApiGetArg (uint32_t, y)
-    printf("draw: %d\n", imageID);
-    m3ApiSuccess();
+m3ApiRawFunction(null0_loadMusic) {
+  m3ApiReturnType (uint16_t);
+  m3ApiGetArgMem(char*, filename)
+  m3ApiReturn(0);
 }
 
-m3ApiRawFunction(m3_imageDimensions) {
-    m3ApiReturnType (uint16_t);
-    m3ApiGetArg (uint32_t, imageID)
-    printf("dimensions: %d\n", imageID);
-    m3ApiReturn(0);
+m3ApiRawFunction(null0_playMusic) {
+  m3ApiGetArg(uint16_t, music)
+  m3ApiSuccess();
 }
 
-m3ApiRawFunction(m3_playMusic) {
-    m3ApiGetArg (uint16_t, musicID)
-    printf("play: %d\n", musicID);
-    m3ApiSuccess();
+m3ApiRawFunction(null0_stopMusic) {
+  m3ApiGetArg(uint16_t, music)
+  m3ApiSuccess();
 }
 
-m3ApiRawFunction(m3_stopMusic) {
-    m3ApiGetArg (uint16_t, musicID)
-    printf("stop: %d\n", musicID);
-    m3ApiSuccess();
+m3ApiRawFunction(null0_drawSprite) {
+  m3ApiGetArg(uint16_t, image)
+  m3ApiGetArg(uint16_t, frame)
+  m3ApiGetArg(uint16_t, width)
+  m3ApiGetArg(uint16_t, height)
+  m3ApiGetArg(uint16_t, x)
+  m3ApiGetArg(uint16_t, y)
+  m3ApiSuccess();
 }
 
-m3ApiRawFunction(m3_drawSprite) {
-    m3ApiGetArg (uint16_t, imageID)
-    m3ApiGetArg (uint16_t, frame)
-    m3ApiGetArg (uint16_t, width)
-    m3ApiGetArg (uint16_t, height)
-    m3ApiGetArg (uint16_t, x)
-    m3ApiGetArg (uint16_t, y)
-    printf("sprite: %d %d %d %d %d %d\n", imageID, frame, width, height, x, y);
-    m3ApiSuccess();
+m3ApiRawFunction(null0_getFPS) {
+  m3ApiReturnType (uint16_t);
+  
+  m3ApiReturn(0);
 }
 
-m3ApiRawFunction(m3_getFPS) {
-    m3ApiReturnType (uint16_t);
-    printf("fps\n");
-    m3ApiReturn(0);
+m3ApiRawFunction(null0_drawText) {
+  m3ApiGetArg(uint16_t, font)
+  m3ApiGetArgMem(char*, text)
+  m3ApiGetArg(int16_t, x)
+  m3ApiGetArg(int16_t, y)
+  m3ApiSuccess();
 }
 
-m3ApiRawFunction(m3_drawText) {
-    m3ApiGetArgMem (uint16_t, fontID)
-    m3ApiGetArgMem (char *, text)
-    m3ApiGetArgMem (uint16_t, x)
-    m3ApiGetArgMem (uint16_t, y)
-    printf("text: %d %s %d %d\n", fontID, text, x, y);
-    m3ApiSuccess();
+m3ApiRawFunction(null0_loadFont) {
+  m3ApiReturnType (uint16_t);
+  m3ApiGetArgMem(char*, filename)
+  m3ApiGetArg(uint16_t, size)
+  m3ApiGetArg(uint32_t, color)
+  m3ApiReturn(0);
 }
 
-void LinkNullZeroFunctions(IM3Module module){
-    m3_LinkRawFunction (module, "env", "null0_cls", "v(i)", &m3_cls);
-    m3_LinkRawFunction (module, "env", "null0_setTitle", "v(i)", &m3_setTitle);
-    m3_LinkRawFunction (module, "env", "null0_loadImage", "i(i)", &m3_loadImage);
-    m3_LinkRawFunction (module, "env", "null0_loadFont", "i(i)", &m3_loadFont);
-    m3_LinkRawFunction (module, "env", "null0_loadMusic", "i(i)", &m3_loadMusic);
-    m3_LinkRawFunction (module, "env", "null0_drawImage", "v(iii)", &m3_drawImage);
-    m3_LinkRawFunction (module, "env", "null0_imageDimensions", "i(i)", &m3_imageDimensions);
-    m3_LinkRawFunction (module, "env", "null0_playMusic", "v(i)", &m3_playMusic);
-    m3_LinkRawFunction (module, "env", "null0_stopMusic", "v(i)", &m3_stopMusic);
-    m3_LinkRawFunction (module, "env", "null0_drawSprite", "v(iiiiii)", &m3_drawSprite);
-    m3_LinkRawFunction (module, "env", "null0_getFPS", "i()", &m3_getFPS);
-    m3_LinkRawFunction (module, "env", "null0_drawText", "v(iiii)", &m3_drawText);
+m3ApiRawFunction(null0_console_log) {
+  m3ApiGetArgMem(char*, text)
+  m3ApiSuccess();
 }
 
+m3ApiRawFunction(null0_abort) {
+  m3ApiGetArgMem(char*, message)
+  m3ApiGetArgMem(char*, fileName)
+  m3ApiGetArg(uint16_t, lineNumber)
+  m3ApiGetArg(uint16_t, columnNumber)
+  m3ApiSuccess();
+}
+
+m3ApiRawFunction(null0_seed) {
+  // m3ApiReturnType (float6_t);
+  
+  // m3ApiReturn(0);
+}
+
+void LinkNullZeroFunctions(IM3Module module) {
+  m3_LinkRawFunction (module, "env", "null0_cls", "v(i)", &null0_cls);
+  m3_LinkRawFunction (module, "env", "null0_setTitle", "v(F)", &null0_setTitle);
+  m3_LinkRawFunction (module, "env", "null0_loadImage", "i(F)", &null0_loadImage);
+  m3_LinkRawFunction (module, "env", "null0_drawImage", "v(iii)", &null0_drawImage);
+  m3_LinkRawFunction (module, "env", "null0_imageDimensions", "undefined(i)", &null0_imageDimensions);
+  m3_LinkRawFunction (module, "env", "null0_loadMusic", "i(F)", &null0_loadMusic);
+  m3_LinkRawFunction (module, "env", "null0_playMusic", "v(i)", &null0_playMusic);
+  m3_LinkRawFunction (module, "env", "null0_stopMusic", "v(i)", &null0_stopMusic);
+  m3_LinkRawFunction (module, "env", "null0_drawSprite", "v(iiiiii)", &null0_drawSprite);
+  m3_LinkRawFunction (module, "env", "null0_getFPS", "i()", &null0_getFPS);
+  m3_LinkRawFunction (module, "env", "null0_drawText", "v(iFii)", &null0_drawText);
+  m3_LinkRawFunction (module, "env", "null0_loadFont", "i(Fii)", &null0_loadFont);
+  m3_LinkRawFunction (module, "env", "console.log", "v(F)", &null0_console_log);
+  m3_LinkRawFunction (module, "env", "abort", "v(FFii)", &null0_abort);
+  m3_LinkRawFunction (module, "env", "seed", "F()", &null0_seed);
+}
 
 int main(int argc, char **argv) {
     if (argc != 2) {
@@ -192,3 +205,4 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+

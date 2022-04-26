@@ -70,7 +70,7 @@ export declare function stopMusic(music: u16): void
 @external("env", "null0_drawSprite")
 export declare function drawSprite(image: u16, frame: u16, width:u16, height:u16, x:u16, y:u16): void
 
-// stop the mod music
+// get the frames-per-second
 @external("env", "null0_getFPS")
 export declare function getFPS(): u16
 
