@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'fs/promises'
+import { readFile } from 'fs/promises'
 
 const iface = JSON.parse(await readFile('interface.json'))
 
