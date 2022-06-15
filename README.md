@@ -54,3 +54,4 @@ The idea is that you have a few "targets" (platforms that your game will run on)
 - opengl/webgl - this would greatly improve performance, I think
 - more supported "source" headers
 - libretro core "target"
+- zip-based game bundle for zipfs (look at browserfs for browser)
