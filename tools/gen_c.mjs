@@ -1,3 +1,5 @@
+// this will generate C runtime
+
 import { readFile } from 'fs/promises'
 
 const iface = JSON.parse(await readFile('interface.json'))
