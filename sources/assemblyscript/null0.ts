@@ -81,4 +81,3 @@ export declare function drawText(font:u16, text:string, x:i16, y: i16): void
 // draw text on the screen
 @external("env", "null0_loadFont")
 export declare function loadFont(filename:string, size: u16, color: u32): u16
-

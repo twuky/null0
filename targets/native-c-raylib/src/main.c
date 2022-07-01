@@ -89,13 +89,14 @@ m3ApiRawFunction(null0_loadFont) {
   m3ApiReturn(0);
 }
 
-m3ApiRawFunction(null0_console_log) {
-  m3ApiGetArgMem(char*, text)
-  printf("%s", text);
+m3ApiRawFunction(env_console_log) {
+  printf("log");
+  // m3ApiGetArgMem(char*, text)
+  // printf("%s", text);
   m3ApiSuccess();
 }
 
-m3ApiRawFunction(null0_abort) {
+m3ApiRawFunction(env_abort) {
   m3ApiGetArgMem(char*, message)
   m3ApiGetArgMem(char*, fileName)
   m3ApiGetArg(uint16_t, lineNumber)
@@ -103,15 +104,15 @@ m3ApiRawFunction(null0_abort) {
   m3ApiSuccess();
 }
 
-m3ApiRawFunction(null0_seed) {
+m3ApiRawFunction(env_seed) {
   m3ApiReturnType (float);
   m3ApiReturn(0);
 }
 
 int main(int argc, char **argv) {
     if (argc != 2) {
-        fprintf(stderr, "Usage %s game.wasm\n", argv[0]);
-        return 1;
+      fprintf(stderr, "Usage %s game.wasm\n", argv[0]);
+      return 1;
     }
 
     IM3Environment env = m3_NewEnvironment ();
@@ -128,18 +129,18 @@ int main(int argc, char **argv) {
     fseek (f, 0, SEEK_SET);
 
     if (fsize < 8) {
-        FATAL("wasm", "file is too small");
+      FATAL("wasm", "file is too small");
     } else if (fsize > 64*1024*1024) {
-        FATAL("wasm", "file is too big");
+      FATAL("wasm", "file is too big");
     }
 
     wasm = (u8*) malloc(fsize);
     if (!wasm) {
-        FATAL("wasm", "cannot allocate memory for wasm binary");
+      FATAL("wasm", "cannot allocate memory for wasm binary");
     }
 
     if (fread (wasm, 1, fsize, f) != fsize) {
-        FATAL("wasm", "cannot read file");
+      FATAL("wasm", "cannot read file");
     }
     fclose (f);
     f = NULL;
@@ -150,10 +151,10 @@ int main(int argc, char **argv) {
     if (result) FATAL("wasm", "cannot load");
 
     m3_LinkRawFunction (module, "env", "null0_cls", "v(i)", &null0_cls);
-    m3_LinkRawFunction (module, "env", "null0_setTitle", "v(F)", &null0_setTitle);
-    m3_LinkRawFunction (module, "env", "null0_loadImage", "i(F)", &null0_loadImage);
+    m3_LinkRawFunction (module, "env", "null0_setTitle", "v(i)", &null0_setTitle);
+    m3_LinkRawFunction (module, "env", "null0_loadImage", "i(i)", &null0_loadImage);
     m3_LinkRawFunction (module, "env", "null0_drawImage", "v(iii)", &null0_drawImage);
-    m3_LinkRawFunction (module, "env", "null0_imageDimensions", "undefined(i)", &null0_imageDimensions);
+    m3_LinkRawFunction (module, "env", "null0_imageDimensions", "i(i)", &null0_imageDimensions);
     m3_LinkRawFunction (module, "env", "null0_loadMusic", "i(F)", &null0_loadMusic);
     m3_LinkRawFunction (module, "env", "null0_playMusic", "v(i)", &null0_playMusic);
     m3_LinkRawFunction (module, "env", "null0_stopMusic", "v(i)", &null0_stopMusic);
@@ -161,38 +162,38 @@ int main(int argc, char **argv) {
     m3_LinkRawFunction (module, "env", "null0_getFPS", "i()", &null0_getFPS);
     m3_LinkRawFunction (module, "env", "null0_drawText", "v(iFii)", &null0_drawText);
     m3_LinkRawFunction (module, "env", "null0_loadFont", "i(Fii)", &null0_loadFont);
-    m3_LinkRawFunction (module, "env", "console.log", "v(F)", &null0_console_log);
-    m3_LinkRawFunction (module, "env", "abort", "v(FFii)", &null0_abort);
-    m3_LinkRawFunction (module, "env", "seed", "F()", &null0_seed);
+    m3_LinkRawFunction (module, "env", "console.log", "v(F)", &env_console_log);
+    m3_LinkRawFunction (module, "env", "abort", "v(FFii)", &env_abort);
+    m3_LinkRawFunction (module, "env", "seed", "F()", &env_seed);
 
     IM3Function gameInit;
     result = m3_FindFunction (&gameInit, runtime, "init");
     if ( result ) {
-        printf("init: %s\n", result);
-    }
-
-    IM3Function gameLoaded;
-    result = m3_FindFunction (&gameLoaded, runtime, "loaded");
-    if ( result ) {
-        printf("loaded: %s\n", result);
-    }
-
-    IM3Function gameButtonDown;
-    result = m3_FindFunction (&gameButtonDown, runtime, "buttonDown");
-    if ( result ) {
-        printf("buttonDown: %s\n", result);
-    }
-
-    IM3Function gameButtonUp;
-    result = m3_FindFunction (&gameButtonUp, runtime, "buttonUp");
-    if ( result ) {
-        printf("buttonUp: %s\n", result);
+      FATAL("init", result);
     }
 
     IM3Function gameUpdate;
     result = m3_FindFunction (&gameUpdate, runtime, "update");
     if ( result ) {
-        printf("update: %s\n", result);
+      FATAL("update", result);
+    }
+
+    IM3Function gameLoaded;
+    result = m3_FindFunction (&gameLoaded, runtime, "loaded");
+    if ( result ) {
+      FATAL("loaded", result);
+    }
+
+    IM3Function gameButtonDown;
+    result = m3_FindFunction (&gameButtonDown, runtime, "buttonDown");
+    if ( result ) {
+      FATAL("buttonDown", result);
+    }
+
+    IM3Function gameButtonUp;
+    result = m3_FindFunction (&gameButtonUp, runtime, "buttonUp");
+    if ( result ) {
+      FATAL("buttonUp", result);
     }
 
     SetTraceLogLevel(LOG_ERROR);
@@ -200,21 +201,17 @@ int main(int argc, char **argv) {
     SetTargetFPS(60);
 
     if (gameInit) {
-        m3_CallV (gameInit);
+      m3_CallV (gameInit);
     }
 
     while (!WindowShouldClose()) {
-        BeginDrawing();
-
-        ClearBackground(BLACK);
-
-        if (gameUpdate) {
-            m3_CallV (gameUpdate);
-        }
-        
-        EndDrawing();
+      BeginDrawing();
+      ClearBackground(BLACK);
+      if (gameUpdate) {
+        m3_CallV (gameUpdate, 0);
+      }
+      EndDrawing();
     }
-
     CloseWindow();
 
     return 0;
