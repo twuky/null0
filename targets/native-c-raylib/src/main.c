@@ -36,9 +36,9 @@ m3ApiRawFunction(null0_drawImage) {
 }
 
 m3ApiRawFunction(null0_imageDimensions) {
-  // m3ApiReturnType (undefined);
+  m3ApiReturnType (uint16_t);
   m3ApiGetArg(uint16_t, image)
-  // m3ApiReturn(0);
+  m3ApiReturn(0);
 }
 
 m3ApiRawFunction(null0_loadMusic) {
@@ -91,6 +91,7 @@ m3ApiRawFunction(null0_loadFont) {
 
 m3ApiRawFunction(null0_console_log) {
   m3ApiGetArgMem(char*, text)
+  printf("%s", text);
   m3ApiSuccess();
 }
 
@@ -103,27 +104,8 @@ m3ApiRawFunction(null0_abort) {
 }
 
 m3ApiRawFunction(null0_seed) {
-  // m3ApiReturnType (float6_t);
-  
-  // m3ApiReturn(0);
-}
-
-void LinkNullZeroFunctions(IM3Module module) {
-  m3_LinkRawFunction (module, "env", "null0_cls", "v(i)", &null0_cls);
-  m3_LinkRawFunction (module, "env", "null0_setTitle", "v(F)", &null0_setTitle);
-  m3_LinkRawFunction (module, "env", "null0_loadImage", "i(F)", &null0_loadImage);
-  m3_LinkRawFunction (module, "env", "null0_drawImage", "v(iii)", &null0_drawImage);
-  m3_LinkRawFunction (module, "env", "null0_imageDimensions", "undefined(i)", &null0_imageDimensions);
-  m3_LinkRawFunction (module, "env", "null0_loadMusic", "i(F)", &null0_loadMusic);
-  m3_LinkRawFunction (module, "env", "null0_playMusic", "v(i)", &null0_playMusic);
-  m3_LinkRawFunction (module, "env", "null0_stopMusic", "v(i)", &null0_stopMusic);
-  m3_LinkRawFunction (module, "env", "null0_drawSprite", "v(iiiiii)", &null0_drawSprite);
-  m3_LinkRawFunction (module, "env", "null0_getFPS", "i()", &null0_getFPS);
-  m3_LinkRawFunction (module, "env", "null0_drawText", "v(iFii)", &null0_drawText);
-  m3_LinkRawFunction (module, "env", "null0_loadFont", "i(Fii)", &null0_loadFont);
-  m3_LinkRawFunction (module, "env", "console.log", "v(F)", &null0_console_log);
-  m3_LinkRawFunction (module, "env", "abort", "v(FFii)", &null0_abort);
-  m3_LinkRawFunction (module, "env", "seed", "F()", &null0_seed);
+  m3ApiReturnType (float);
+  m3ApiReturn(0);
 }
 
 int main(int argc, char **argv) {
@@ -167,12 +149,44 @@ int main(int argc, char **argv) {
     result = m3_LoadModule (runtime, module);
     if (result) FATAL("wasm", "cannot load");
 
-    LinkNullZeroFunctions(module);
+    m3_LinkRawFunction (module, "env", "null0_cls", "v(i)", &null0_cls);
+    m3_LinkRawFunction (module, "env", "null0_setTitle", "v(F)", &null0_setTitle);
+    m3_LinkRawFunction (module, "env", "null0_loadImage", "i(F)", &null0_loadImage);
+    m3_LinkRawFunction (module, "env", "null0_drawImage", "v(iii)", &null0_drawImage);
+    m3_LinkRawFunction (module, "env", "null0_imageDimensions", "undefined(i)", &null0_imageDimensions);
+    m3_LinkRawFunction (module, "env", "null0_loadMusic", "i(F)", &null0_loadMusic);
+    m3_LinkRawFunction (module, "env", "null0_playMusic", "v(i)", &null0_playMusic);
+    m3_LinkRawFunction (module, "env", "null0_stopMusic", "v(i)", &null0_stopMusic);
+    m3_LinkRawFunction (module, "env", "null0_drawSprite", "v(iiiiii)", &null0_drawSprite);
+    m3_LinkRawFunction (module, "env", "null0_getFPS", "i()", &null0_getFPS);
+    m3_LinkRawFunction (module, "env", "null0_drawText", "v(iFii)", &null0_drawText);
+    m3_LinkRawFunction (module, "env", "null0_loadFont", "i(Fii)", &null0_loadFont);
+    m3_LinkRawFunction (module, "env", "console.log", "v(F)", &null0_console_log);
+    m3_LinkRawFunction (module, "env", "abort", "v(FFii)", &null0_abort);
+    m3_LinkRawFunction (module, "env", "seed", "F()", &null0_seed);
 
     IM3Function gameInit;
     result = m3_FindFunction (&gameInit, runtime, "init");
     if ( result ) {
         printf("init: %s\n", result);
+    }
+
+    IM3Function gameLoaded;
+    result = m3_FindFunction (&gameLoaded, runtime, "loaded");
+    if ( result ) {
+        printf("loaded: %s\n", result);
+    }
+
+    IM3Function gameButtonDown;
+    result = m3_FindFunction (&gameButtonDown, runtime, "buttonDown");
+    if ( result ) {
+        printf("buttonDown: %s\n", result);
+    }
+
+    IM3Function gameButtonUp;
+    result = m3_FindFunction (&gameButtonUp, runtime, "buttonUp");
+    if ( result ) {
+        printf("buttonUp: %s\n", result);
     }
 
     IM3Function gameUpdate;
