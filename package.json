@@ -1,22 +1,14 @@
 {
   "name": "null0",
-  "version": "1.0.0",
-  "type": "module",
+  "version": "0.0.0",
   "scripts": {
-    "build:example:assemblyscript": "asc examples/assemblyscript/demo.ts --exportRuntime --target debug --bindings raw",
-    "watch:example:assemblyscript": "npx -y onchange -v -i examples/assemblyscript sources/assemblyscript -- npm run build:example:assemblyscript",
-    "watch:target:web": "npx -y live-server targets/web",
-    "build:target:web": "asc examples/assemblyscript/demo.ts --target release --bindings raw",
-    "start": "run-p watch:example:assemblyscript watch:target:web"
+    "build:example": "asc example/index.ts --exportRuntime --target release",
+    "build:native": "cd runtime/native && mkdir -p build && cd build && cmake .. && make",
+    "test": "runtime/native/build/null0 example/build/simple.wasm",
+    "pretest": "run-p build:example build:native"
   },
-  "keywords": [],
-  "author": "David Konsumer <konsumer@jetboystudio.com>",
-  "license": "MIT",
   "devDependencies": {
-    "@webassemblyjs/cli": "^1.11.1",
-    "@webassemblyjs/wast-parser": "^1.11.1",
-    "assemblyscript": "^0.20.4",
-    "npm-run-all": "^4.1.5",
-    "typescript": "^4.6.3"
+    "assemblyscript": "^0.20.13",
+    "npm-run-all": "^4.1.5"
   }
 }

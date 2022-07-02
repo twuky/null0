@@ -1,14 +1,8 @@
 {
   "targets": {
-    "debug": {
-      "outFile": "build/debug.wasm",
-      "textFile": "build/debug.wat",
-      "sourceMap": true,
-      "debug": true
-    },
     "release": {
-      "outFile": "build/release.wasm",
-      "textFile": "build/release.wat",
+      "outFile": "example/build/simple.wasm",
+      "textFile": "example/build/simple.wat",
       "sourceMap": true,
       "optimizeLevel": 3,
       "shrinkLevel": 0,
@@ -17,6 +11,6 @@
     }
   },
   "options": {
-    "bindings": "esm"
+    "bindings": "raw"
   }
 }

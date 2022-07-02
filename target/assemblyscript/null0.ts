@@ -34,6 +34,10 @@ export const palette = [
   0x333c57ff
 ]
 
+// log a string
+@external("env", "null0_log")
+export declare function log(message: string): void
+
 // clear screen with a color
 @external("env", "null0_cls")
 export declare function cls(color: u32): void
@@ -81,3 +85,4 @@ export declare function drawText(font:u16, text:string, x:i16, y: i16): void
 // draw text on the screen
 @external("env", "null0_loadFont")
 export declare function loadFont(filename:string, size: u16, color: u32): u16
+
