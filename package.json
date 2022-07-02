@@ -2,7 +2,7 @@
   "name": "null0",
   "version": "0.0.0",
   "scripts": {
-    "build:example": "asc example/index.ts --exportRuntime --target release",
+    "build:example": "asc example/index.ts --target release",
     "build:native": "cd runtime/native && mkdir -p build && cd build && cmake .. && make",
     "test": "runtime/native/build/null0 example/build/simple.wasm",
     "pretest": "run-p build:example build:native"
