@@ -1,0 +1,180 @@
+{
+  "cart": [
+    {
+      "comment": "Called initially to load things. They are not readable yet",
+      "name": "init",
+      "params": {},
+      "returns": "void"
+    },
+    {
+      "comment": "Called on every frame draw",
+      "name": "update",
+      "params": {
+        "delta": "u16"
+      },
+      "returns": "void"
+    },
+    {
+      "comment": "Called when a resource is loaded",
+      "name": "loaded",
+      "params": {
+        "resource": "u16"
+      },
+      "returns": "void"
+    },
+    {
+      "comment": "Called whever a button goes up",
+      "name": "buttonUp",
+      "params": {
+        "button": "u8"
+      },
+      "returns": "void"
+    },
+    {
+      "comment": "Called whever a button goes down",
+      "name": "buttonDown",
+      "params": {
+        "button": "u8"
+      },
+      "returns": "void"
+    }
+  ],
+  "host": [
+    {
+      "comment": "Clear screen with a color",
+      "name": "cls",
+      "params": {
+        "color": "u32"
+      },
+      "returns": "void"
+    },
+    {
+      "comment": "Set the title of the window",
+      "name": "setTitle",
+      "params": {
+        "title": "string"
+      },
+      "returns": "void"
+    },
+    {
+      "comment": "Load an image",
+      "name": "loadImage",
+      "params": {
+        "filename": "string"
+      },
+      "returns": "u16"
+    },
+    {
+      "comment": "Draw an image",
+      "name": "drawImage",
+      "params": {
+        "image": "u16",
+        "x": "i16",
+        "y": "i16"
+      },
+      "returns": "void"
+    },
+    {
+      "comment": "Get height/width for an image",
+      "name": "imageDimensions",
+      "params": {
+        "image": "u16"
+      },
+      "returns": [
+        "u16",
+        "u16"
+      ]
+    },
+    {
+      "comment": "Load a mod music file",
+      "name": "loadMusic",
+      "params": {
+        "filename": "string"
+      },
+      "returns": "u16"
+    },
+    {
+      "comment": "Load a mod music file",
+      "name": "playMusic",
+      "params": {
+        "music": "u16"
+      },
+      "returns": "void"
+    },
+    {
+      "comment": "Stop the mod music",
+      "name": "stopMusic",
+      "params": {
+        "music": "u16"
+      },
+      "returns": "void"
+    },
+    {
+      "comment": "Draw a single frame from a spritesheet",
+      "name": "drawSprite",
+      "params": {
+        "image": "u16",
+        "frame": "u16",
+        "width": "u16",
+        "height": "u16",
+        "x": "u16",
+        "y": "u16"
+      },
+      "returns": "void"
+    },
+    {
+      "comment": "Get the frames-per-second",
+      "name": "getFPS",
+      "params": {},
+      "returns": "u16"
+    },
+    {
+      "comment": "Draw text on the screen",
+      "name": "drawText",
+      "params": {
+        "font": "u16",
+        "text": "string",
+        "x": "i16",
+        "y": "i16"
+      },
+      "returns": "void"
+    },
+    {
+      "comment": "Draw text on the screen",
+      "name": "loadFont",
+      "params": {
+        "filename": "string",
+        "size": "u16",
+        "color": "u32"
+      },
+      "returns": "u16"
+    },
+    {
+      "comment": "Log a string",
+      "name": "log",
+      "params": {
+        "text": "string"
+      },
+      "returns": "void"
+    },
+    {
+      "comment": "Fatal error",
+      "name": "abort",
+      "internal": true,
+      "params": {
+        "message": "string",
+        "fileName": "string",
+        "lineNumber": "u16",
+        "columnNumber": "u16"
+      },
+      "returns": "void"
+    },
+    {
+      "comment": "Seed the random-number generator",
+      "name": "seed",
+      "internal": true,
+      "params": {},
+      "returns": "f64"
+    }
+  ]
+}
