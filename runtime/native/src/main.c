@@ -48,15 +48,6 @@ static m3ApiRawFunction (null0_log) {
   printf("%s", str);
   m3ApiSuccess();
 }
-static m3ApiRawFunction (null0_abort) {
-  m3ApiGetArgMem(const char*, message);
-  m3ApiGetArgMem(const char*, fileName);
-  m3ApiGetArg(int, lineNumber);
-  m3ApiGetArg(int, columnNumber);
-  char *out;
-  sprintf(out, "%s in %s:%d:%d", message, fileName, lineNumber, columnNumber);
-  null0_fatal_error("cart", out);
-}
 
 // this is the actual run, after all has been loaded
 void null0_cart_run () {
@@ -76,7 +67,6 @@ void null0_load_cart_wasm (u8* wasmBuffer, int byteLength) {
 
   // imports for cart
   m3_LinkRawFunction(module, "env", "null0_log", "v(i)", &null0_log);
-  m3_LinkRawFunction(module, "env", "abort", "v(iiii)", &null0_abort);
   null0_check_wasm3_is_ok();
 
   // exports from cart
