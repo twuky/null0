@@ -42,7 +42,7 @@ static M3Function* cart_init;
 
 
 // imports for cart
-// XXX: currently only pruints first character
+// XXX: currently only prints first character
 static m3ApiRawFunction (null0_log) {
   m3ApiGetArgMem(const char*, str);
   printf("%s", str);
