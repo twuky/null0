@@ -75,15 +75,20 @@
       "returns": "void"
     },
     {
-      "comment": "Get height/width for an image",
-      "name": "imageDimensions",
+      "comment": "Get width for an image",
+      "name": "imageWidth",
       "params": {
         "image": "u16"
       },
-      "returns": [
-        "u16",
-        "u16"
-      ]
+      "returns": "u16"
+    },
+    {
+      "comment": "Get height for an image",
+      "name": "imageHeight",
+      "params": {
+        "image": "u16"
+      },
+      "returns": "u16"
     },
     {
       "comment": "Load a mod music file",

@@ -34,7 +34,7 @@ function wrapImport(i) {
 static m3ApiRawFunction (null0_${i.name}) {
 `
   if (i.returns !== 'void') {
-    out += `  m3ApiReturnType (${cType(i.returns)});\n  ${cType(i.returns, 'out')} retval;\n`
+    out += `  m3ApiReturnType (${cType(i.returns)});\n  ${cType(i.returns)} retval;\n`
   }
 
   for (const p of Object.keys(i.params)) {
@@ -51,7 +51,7 @@ static m3ApiRawFunction (null0_${i.name}) {
   if (i.returns === 'void') {
     out += '  m3ApiSuccess();\n'
   } else {
-    out += '  m3ApiSuccess(retval);\n'
+    out += '  m3ApiReturn(retval);\n'
   }
 
   out += `}\n`
@@ -104,14 +104,14 @@ void null0_string(const char* str, char* out) {
   for (i = 0; i < sizeof(out); i+=2) {
     out[i/2] =  *( str + i );
   }
-  out[(i/2) + 1] = '\0';
+  out[(i/2) + 1] = '\\0';
 }
 
 // IMPORTS
 ${host.filter(i => !i.internal).map(i => wrapImport(i)).join('\n')}
 
 // EXPORTS
-${cart.map(e => `static M3Function* cart_${e.name}`).join('\n')}
+${cart.map(e => `static M3Function* cart_${e.name};`).join('\n')}
 
 // load a wasm binary buffer
 void null0_load_cart_wasm (u8* wasmBuffer, int byteLength) {
