@@ -53,16 +53,6 @@ static void null0_check_wasm3_is_ok () {
   }
 }
 
-// convert a RGBA uint32 to a raylib color
-struct Color null0_color(uint32_t num) {
-  uint32_t r = ((num & 0xFF000000) >> 24);
-  uint32_t  g = (num & 0xFF0000) >> 16;
-  uint32_t  b = (num & 0xFF00) >> 8;
-  uint32_t  a = (num & 0xFF) / 255;
-  struct Color out = { r, g, b, a };
-  return out;
-}
-
 // IMPORTS
 
 // Fatal error
@@ -84,7 +74,7 @@ static m3ApiRawFunction (null0_abort) {
 // Clear screen with a color
 static m3ApiRawFunction (null0_cls) {
   m3ApiGetArg(uint32_t, color);
-  ClearBackground(null0_color(color));
+  ClearBackground(GetColor(color));
   m3ApiSuccess();
 }
 
@@ -101,26 +91,33 @@ static m3ApiRawFunction (null0_setTitle) {
 
 // Load an image
 static m3ApiRawFunction (null0_loadImage) {
-  m3ApiReturnType (uint16_t);
-  uint16_t retval;
+  m3ApiReturnType (uint32_t*);
   m3ApiGetArgMem(const uint16_t *, _sfilename);
+
   char filename[1024];
   ConvertUTF16ToUTF8(_sfilename, filename);
-  printf("%s", filename);
 
-  // CODE GOES HERE
+  // TODO
+  printf("LOAD %s", filename);
 
-  m3ApiReturn(retval);
+  // void* ptr = MemAlloc(sizeof(Texture2D));
+  // *(Texture2D*)ptr = LoadTexture("assets/cat.png");
+  m3ApiReturn(0);
 }
 
 
 // Draw an image
 static m3ApiRawFunction (null0_drawImage) {
-  m3ApiGetArg(uint16_t, image);
+  m3ApiGetArgMem(uint32_t*, image);
+
   m3ApiGetArg(int16_t, x);
   m3ApiGetArg(int16_t, y);
 
-  // CODE GOES HERE
+  // TODO
+  printf("DRAW: %d - %d,%d", image, x, y);
+
+  // Texture2D texture = *(Texture2D*) image;
+  // DrawTexture(texture, x, y, WHITE);
 
   m3ApiSuccess();
 }
@@ -130,7 +127,7 @@ static m3ApiRawFunction (null0_drawImage) {
 static m3ApiRawFunction (null0_imageWidth) {
   m3ApiReturnType (uint16_t);
   uint16_t retval;
-  m3ApiGetArg(uint16_t, image);
+  m3ApiGetArgMem(const uint64_t *, image);
 
   // CODE GOES HERE
 
@@ -142,7 +139,7 @@ static m3ApiRawFunction (null0_imageWidth) {
 static m3ApiRawFunction (null0_imageHeight) {
   m3ApiReturnType (uint16_t);
   uint16_t retval;
-  m3ApiGetArg(uint16_t, image);
+  m3ApiGetArg(uint64_t, image);
 
   // CODE GOES HERE
 
@@ -152,7 +149,7 @@ static m3ApiRawFunction (null0_imageHeight) {
 
 // Load a mod music file
 static m3ApiRawFunction (null0_loadMusic) {
-  m3ApiReturnType (uint16_t);
+  m3ApiReturnType (uint64_t);
   uint16_t retval;
   m3ApiGetArgMem(const uint16_t *, _sfilename);
   char filename[1024];
@@ -166,7 +163,7 @@ static m3ApiRawFunction (null0_loadMusic) {
 
 // Load a mod music file
 static m3ApiRawFunction (null0_playMusic) {
-  m3ApiGetArg(uint16_t, music);
+  m3ApiGetArg(uint64_t, music);
 
   // CODE GOES HERE
 
@@ -176,7 +173,7 @@ static m3ApiRawFunction (null0_playMusic) {
 
 // Stop the mod music
 static m3ApiRawFunction (null0_stopMusic) {
-  m3ApiGetArg(uint16_t, music);
+  m3ApiGetArg(uint64_t, music);
 
   // CODE GOES HERE
 
@@ -186,7 +183,7 @@ static m3ApiRawFunction (null0_stopMusic) {
 
 // Draw a single frame from a spritesheet
 static m3ApiRawFunction (null0_drawSprite) {
-  m3ApiGetArg(uint16_t, image);
+  m3ApiGetArg(uint64_t, image);
   m3ApiGetArg(uint16_t, frame);
   m3ApiGetArg(uint16_t, width);
   m3ApiGetArg(uint16_t, height);
@@ -212,7 +209,7 @@ static m3ApiRawFunction (null0_getFPS) {
 
 // Draw text on the screen
 static m3ApiRawFunction (null0_drawText) {
-  m3ApiGetArg(uint16_t, font);
+  m3ApiGetArg(uint64_t, font);
   m3ApiGetArgMem(const uint16_t *, _stext);
   char text[1024];
   ConvertUTF16ToUTF8(_stext, text);
@@ -227,8 +224,8 @@ static m3ApiRawFunction (null0_drawText) {
 
 // Draw text on the screen
 static m3ApiRawFunction (null0_loadFont) {
-  m3ApiReturnType (uint16_t);
-  uint16_t retval;
+  m3ApiReturnType (uint64_t);
+  uint64_t retval;
   m3ApiGetArgMem(const uint16_t *, _sfilename);
   char filename[1024];
   ConvertUTF16ToUTF8(_sfilename, filename);
@@ -326,7 +323,8 @@ void null0_load_cart_file (char* filename) {
 int main (int argc, char **argv) {
   null0_load_cart_file(argv[1]);
   
-  SetTraceLogLevel(LOG_ERROR);
+  // disable raylib debugging
+  // SetTraceLogLevel(LOG_ERROR);
 
   InitWindow(320, 240, "null0");
   SetTargetFPS(60);
